@@ -7,6 +7,8 @@ math: katex
 
 <!-- _class: lead -->
 
+![width:160px](assets/logo.png)
+
 # Neo4j Template for Marp
 ### Unofficial Graph-native slides · Neo4j brand · Markdown-first
 
@@ -60,6 +62,8 @@ LIMIT 10
 ---
 
 ## Image & Quote
+
+![bg right:45%](assets/lineage.png)
 
 > "Relationships are a first-class citizen in Neo4j — not an afterthought."
 > — Neo4j engineering
