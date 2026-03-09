@@ -7,7 +7,7 @@ math: katex
 
 <!-- _class: lead -->
 
-![width:160px](assets/logo.png)
+![width:160px](assets/logo-white.png)
 
 # Neo4j Template for Marp
 ### Unofficial Graph-native slides · Neo4j brand · Markdown-first
