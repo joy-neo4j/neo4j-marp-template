@@ -1,0 +1,236 @@
+/* @theme neo4j */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Public+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+/* ── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+  --neo-blue:        #0A6190;
+  --neo-dark-blue:   #014063;
+  --neo-darkest:     #041823;
+  --neo-green:       #145439;
+  --neo-teal:        #5DB3BF;
+  --neo-cyan:        #8FE3E8;
+  --neo-light-green: #90CB62;
+  --neo-marigold:    #FFA901;
+  --neo-text:        #1B1B1B;
+  --neo-muted:       #525252;
+  --neo-off-white:   #FCF9F6;
+  --neo-surface:     #F5F7FA;
+  --neo-border:      #E6E9EE;
+}
+
+/* ── Base slide ─────────────────────────────────────────────────────────── */
+section {
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 28px;
+  color: var(--neo-text);
+  background-color: #ffffff;
+  padding: 56px 72px 56px 72px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top accent bar */
+section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--neo-blue), var(--neo-teal), var(--neo-cyan));
+}
+
+/* Page number */
+section::after {
+  color: var(--neo-muted);
+  font-size: 0.6em;
+  font-family: 'Public Sans', sans-serif;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: var(--neo-blue);
+  margin-top: 0;
+  line-height: 1.15;
+}
+
+h1 { font-size: 1.9em; }
+
+h2 {
+  font-size: 1.4em;
+  padding-bottom: 0.25em;
+  border-bottom: 3px solid var(--neo-teal);
+  margin-bottom: 0.6em;
+}
+
+h3 { font-size: 1.1em; color: var(--neo-dark-blue); }
+
+p { line-height: 1.6; color: var(--neo-muted); }
+
+a { color: var(--neo-blue); text-decoration: underline; }
+
+strong { color: var(--neo-blue); font-weight: 600; }
+
+em { color: var(--neo-muted); }
+
+/* ── Lists ──────────────────────────────────────────────────────────────── */
+ul, ol { color: var(--neo-muted); line-height: 1.8; padding-left: 1.4em; }
+
+ul li::marker { color: var(--neo-teal); }
+ol li::marker { color: var(--neo-blue); font-weight: 600; }
+
+/* ── Blockquote ─────────────────────────────────────────────────────────── */
+blockquote {
+  border-left: 4px solid var(--neo-teal);
+  background: var(--neo-surface);
+  margin: 0;
+  padding: 0.6em 1.2em;
+  border-radius: 0 8px 8px 0;
+  color: var(--neo-muted);
+  font-style: italic;
+}
+
+blockquote p { margin: 0; color: inherit; }
+
+/* ── Inline code ────────────────────────────────────────────────────────── */
+code {
+  font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+  background: var(--neo-surface);
+  color: var(--neo-dark-blue);
+  padding: 0.1em 0.45em;
+  border-radius: 4px;
+  font-size: 0.82em;
+}
+
+/* ── Code blocks ────────────────────────────────────────────────────────── */
+pre {
+  background: var(--neo-darkest);
+  border-left: 4px solid var(--neo-teal);
+  border-radius: 8px;
+  padding: 0.9em 1.2em;
+  margin: 0.8em 0;
+  overflow: hidden;
+}
+
+pre code {
+  background: transparent;
+  color: #e2e3e5;
+  padding: 0;
+  font-size: 0.78em;
+  border-radius: 0;
+}
+
+/* Cypher highlight.js token colors (dark background) */
+pre .hljs-keyword        { color: var(--neo-cyan);        font-weight: 600; }
+pre .hljs-type           { color: var(--neo-light-green); }
+pre .hljs-string         { color: var(--neo-marigold);    }
+pre .hljs-number         { color: #FFA901;                }
+pre .hljs-comment        { color: #6F757E; font-style: italic; }
+pre .hljs-variable       { color: var(--neo-off-white);   }
+pre .hljs-built_in       { color: var(--neo-teal);        }
+pre .hljs-operator       { color: var(--neo-cyan);        }
+
+/* ── Tables ─────────────────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85em;
+}
+
+th {
+  background: var(--neo-blue);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+
+td {
+  padding: 0.4em 0.8em;
+  border-bottom: 1px solid var(--neo-border);
+  color: var(--neo-muted);
+}
+
+tr:nth-child(even) td { background: var(--neo-surface); }
+
+/* ── Header / Footer ────────────────────────────────────────────────────── */
+header, footer {
+  font-family: 'Public Sans', sans-serif;
+  font-size: 0.55em;
+  color: var(--neo-muted);
+}
+
+/* ── Lead (title) slide ─────────────────────────────────────────────────── */
+section.lead {
+  background: var(--neo-darkest);
+  color: white;
+  justify-content: center;
+  text-align: left;
+}
+
+section.lead::before {
+  height: 6px;
+}
+
+section.lead h1 {
+  font-size: 2.4em;
+  color: white;
+  margin-bottom: 0.2em;
+}
+
+section.lead h2, section.lead h3 {
+  color: var(--neo-cyan);
+  border: none;
+  margin-bottom: 0;
+}
+
+section.lead p { color: rgba(255,255,255,0.7); }
+
+section.lead strong { color: var(--neo-cyan); }
+
+section.lead::after { color: rgba(255,255,255,0.4); }
+
+/* Neo4j graph decoration on lead */
+section.lead .graph-bg {
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 380px; height: 380px;
+  opacity: 0.06;
+  background: radial-gradient(circle, var(--neo-teal) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* ── Invert (dark section) slide ────────────────────────────────────────── */
+section.invert {
+  background: var(--neo-dark-blue);
+  color: white;
+}
+
+section.invert h1, section.invert h2, section.invert h3 {
+  color: var(--neo-cyan);
+  border-color: var(--neo-teal);
+}
+
+section.invert p, section.invert li { color: rgba(255,255,255,0.8); }
+
+section.invert code {
+  background: rgba(255,255,255,0.1);
+  color: var(--neo-cyan);
+}
+
+section.invert::after { color: rgba(255,255,255,0.4); }
+
+/* ── Mermaid diagrams ───────────────────────────────────────────────────── */
+.mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 0.5em 0;
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  max-height: 420px;
+  height: auto;
+}

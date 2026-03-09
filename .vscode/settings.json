@@ -1,0 +1,4 @@
+{
+  "markdown.marp.themes": ["./neo4j.css"],
+  "markdown.marp.html": true
+}
