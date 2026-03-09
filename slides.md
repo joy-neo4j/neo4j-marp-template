@@ -7,17 +7,20 @@ math: katex
 
 <!-- _class: lead -->
 
-# Welcome to Marp
-### Create beautiful slide decks with Markdown
+# Neo4j Template for Marp
+### Unofficial Graph-native slides · Neo4j brand · Markdown-first
+
+John Doe · john.doe@neo4j.com
 
 ---
 
-## What is Marp?
+## What's in this template?
 
-- Write slides in **Markdown**
-- Export to **PDF**, **HTML**, or **PPTX**
-- Use **themes** and custom **CSS**
-- Integrates with **VS Code**
+- **Neo4j brand theme** — colors, fonts, and layout from the Needle design system
+- **Cypher syntax highlighting** — auto-applied at build time
+- **Mermaid diagrams** — rendered to SVG (`graph`, `sequenceDiagram`, and more)
+- **KaTeX math** — inline and block equations
+- **VS Code preview** — with the Marp extension
 
 ---
 
@@ -38,18 +41,18 @@ LIMIT 10
 <div style="display: flex; gap: 2rem;">
 <div>
 
-### Left Column
-- Point one
-- Point two
-- Point three
+### Graph database
+- Nodes & relationships
+- Schema-optional
+- Index-free adjacency
 
 </div>
 <div>
 
-### Right Column
-- Alpha
-- Beta
-- Gamma
+### Relational database
+- Tables & foreign keys
+- Fixed schema
+- JOIN-based traversal
 
 </div>
 </div>
@@ -58,8 +61,8 @@ LIMIT 10
 
 ## Image & Quote
 
-> "Simplicity is the ultimate sophistication."
-> — Leonardo da Vinci
+> "Relationships are a first-class citizen in Neo4j — not an afterthought."
+> — Neo4j engineering
 
 ---
 
@@ -166,6 +169,7 @@ Content flows on the left.
 
 <!-- _class: lead -->
 
-# Thank You!
+# Start building
+### Replace `slides.md` with your content and run `npm run pdf`
 
-Export with: `npm run pdf`
+**neo4j.com** · Community template · Not official Neo4j material
