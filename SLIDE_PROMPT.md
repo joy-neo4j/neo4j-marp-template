@@ -61,7 +61,7 @@ Apply with an HTML comment **before** the slide content:
 
 - `## Heading` — renders with a teal underline; use as the slide title on every content slide
 - `### Sub-heading` — dark blue, no underline; use for column headers or sub-sections
-- `**bold**` — renders in Neo4j blue; use for key terms
+- `**bold**` — renders in Neo4j blue on light slides; renders in **marigold** on `invert` slides — use for key terms and callout labels
 - `*italic*` — muted gray; use for secondary info
 - `` `inline code` `` — dark blue on light gray; use for node labels, property names, Cypher keywords inline
 
@@ -194,6 +194,21 @@ Use for testimonials, key insights, or highlighted callouts:
 > "Graph databases are the best tool for connected data problems."
 > — Engineering team
 ```
+
+On **`invert` slides**, blockquotes render as a teal-bordered callout box — ideal for key insights and takeaways. Pair with `**bold label:**` (renders in marigold) for maximum impact:
+
+```markdown
+<!-- _class: invert -->
+
+## Slide Title
+
+- point A
+- point B
+
+> **Key insight:** your most important takeaway in one sentence.
+```
+
+Prefer this over plain bold text for any "rule of thumb", "key insight", or "takeaway" on dark slides.
 
 ---
 
