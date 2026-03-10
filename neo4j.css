@@ -231,6 +231,20 @@ section.invert code {
 
 section.invert::after { color: rgba(255,255,255,0.4); }
 
+/* ── Dense (code-heavy) slide ───────────────────────────────────────────── */
+section.dense {
+  font-size: 20px;
+  padding: 40px 56px 40px 56px;
+}
+
+section.dense h2 { font-size: 1.3em; margin-bottom: 0.4em; }
+
+section.dense pre {
+  margin: 0.4em 0;
+}
+
+section.dense pre code { font-size: 0.82em; }
+
 /* ── Mermaid diagrams ───────────────────────────────────────────────────── */
 .mermaid-diagram {
   display: flex;
