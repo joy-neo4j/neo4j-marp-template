@@ -233,6 +233,15 @@ section.invert::after { color: rgba(255,255,255,0.4); }
 
 section.invert strong { color: var(--neo-marigold); }
 
+section.invert blockquote {
+  background: rgba(143,227,232,0.1);
+  border-left: 4px solid var(--neo-teal);
+  color: rgba(255,255,255,0.9);
+}
+
+section.invert blockquote strong { color: var(--neo-marigold); }
+section.invert blockquote p { color: inherit; }
+
 section.invert th {
   background: rgba(143,227,232,0.2);  /* cyan tint — distinct from dark-blue bg */
   color: var(--neo-cyan);

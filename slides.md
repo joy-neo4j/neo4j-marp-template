@@ -207,7 +207,7 @@ Content flows on the left.
 | Query language | Cypher | SQL |
 | Best for | Connected data | Tabular / aggregate |
 
-**Rule of thumb:** if your queries are mostly traversals, reach for a graph.
+> **Rule of thumb:** if your queries are mostly traversals, reach for a graph.
 
 ---
 
