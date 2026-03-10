@@ -67,10 +67,10 @@ Use ` ```mermaid ` — rendered to SVG at build time. Supports all diagram types
 ### Images
 
 ```markdown
-![width:400px](assets/image.svg)      ← inline, resized
-![bg left:40%](assets/image.svg)      ← left background split
-![bg right:40%](assets/image.svg)     ← right background split
-![bg cover](assets/image.svg)         ← full slide background
+![width:400px](../assets/image.svg)      ← inline, resized
+![bg left:40%](../assets/image.svg)      ← left background split
+![bg right:40%](../assets/image.svg)     ← right background split
+![bg cover](../assets/image.svg)         ← full slide background
 ```
 
 Put images in [`assets/`](assets/) and reference them as `../assets/filename` from your deck files.

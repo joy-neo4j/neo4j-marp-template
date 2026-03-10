@@ -33,6 +33,8 @@ Generate a complete Neo4j Marp slide deck about: **$ARGUMENTS**
    ---
    ```
 
+   **Asset paths:** the `assets/` folder will be copied as a sibling of the deck file (step 5), so reference images as `assets/filename` — **not** `../assets/filename`. This overrides the `../assets/` convention described in the slide generation rules above, which applies to the template repo layout only.
+
 4. **Set up the build environment** — clone the template to a temporary directory and install dependencies:
    ```bash
    NEO4J_MARP_TMP=$(mktemp -d)
