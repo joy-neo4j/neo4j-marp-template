@@ -10,3 +10,4 @@ node_modules/
 
 # Personal decks — not part of the template
 dojo.md
+.DS_Store
