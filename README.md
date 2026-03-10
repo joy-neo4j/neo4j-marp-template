@@ -8,6 +8,7 @@ A Marp slide deck template with Neo4j brand theme, Cypher syntax highlighting, M
 npm install
 npm run html      # → slides.html
 npm run pdf       # → slides.pdf
+npm run pptx      # → slides.pptx (image-based, not editable)
 npm run preview   # → browser preview (live reload)
 ```
 
@@ -17,8 +18,10 @@ Edit [`slides.md`](slides.md) and re-run.
 
 ```bash
 node build.mjs my-talk.md --pdf       # → my-talk.pdf
+node build.mjs my-talk.md --pptx      # → my-talk.pptx (image-based, not editable)
 node build.mjs my-talk.md --html      # → my-talk.html
 npm run pdf -- my-talk.md             # same via npm
+npm run pptx -- my-talk.md            # same via npm
 ```
 
 ## Writing slides
