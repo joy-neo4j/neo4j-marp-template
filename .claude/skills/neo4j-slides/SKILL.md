@@ -19,9 +19,9 @@ Follow these steps exactly:
 
 1. **Derive a filename** from the topic in kebab-case (e.g. `graph-rag-intro.md`). Keep it short and descriptive.
 
-2. **Write the deck** to that filename in the project root. The output must be a complete, ready-to-build `.md` file — nothing else, no explanation, no code fences around the whole file.
+2. **Write the deck** to that filename in the project root. The output must be a complete, ready-to-build `.md` file — no explanation, no code fences wrapping the whole file.
 
-3. **Build to PDF** by running:
+3. **Build to PDF**:
    ```
    node build.mjs <filename> --pdf
    ```
