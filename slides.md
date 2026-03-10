@@ -195,6 +195,22 @@ Content flows on the left.
 
 ---
 
+<!-- _class: invert -->
+
+## Invert — Table Example
+
+| Feature | Neo4j | RDBMS |
+|---|---|---|
+| Data model | Property graph | Tables & foreign keys |
+| Relationships | First-class, typed | JOIN at query time |
+| Schema | Optional, flexible | Required, rigid |
+| Query language | Cypher | SQL |
+| Best for | Connected data | Tabular / aggregate |
+
+**Rule of thumb:** if your queries are mostly traversals, reach for a graph.
+
+---
+
 <!-- _class: lead -->
 
 # Start building
