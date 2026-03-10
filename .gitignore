@@ -6,6 +6,7 @@ node_modules/
 # Build outputs
 *.html
 *.pdf
+*.pptx
 
 # Personal decks — not part of the template
 dojo.md
