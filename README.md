@@ -79,6 +79,28 @@ Put images in [`assets/`](assets/).
 
 [`SLIDE_PROMPT.md`](SLIDE_PROMPT.md) is a ready-to-use system prompt. Paste it into any LLM (Claude, ChatGPT, Gemini…) as the system prompt, then describe your deck. The output drops straight into this template.
 
+### Claude Code skill (`/neo4j-slides`)
+
+Install the skill once to generate and build branded decks from any directory using [Claude Code](https://claude.ai/code).
+
+**Prerequisites:** [Claude Code](https://claude.ai/code) installed.
+
+**Install** (from this repo root — only these two files are needed):
+
+```bash
+mkdir -p ~/.claude/skills/neo4j-slides
+cp claude-tools/skills/neo4j-slides/SKILL.md ~/.claude/skills/neo4j-slides/
+cp SLIDE_PROMPT.md ~/.claude/skills/neo4j-slides/
+```
+
+**Use:** open Claude Code in any directory and run:
+
+```
+/neo4j-slides <topic description>
+```
+
+Claude writes the `.md` file, clones this repo to a temp directory, builds the PDF, copies `assets/` next to your deck, and cleans up — no local template installation required.
+
 ## Files
 
 | File | Purpose |
