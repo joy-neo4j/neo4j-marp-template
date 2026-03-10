@@ -231,6 +231,8 @@ section.invert code {
 
 section.invert::after { color: rgba(255,255,255,0.4); }
 
+section.invert strong { color: var(--neo-marigold); }
+
 section.invert th {
   background: rgba(143,227,232,0.2);  /* cyan tint — distinct from dark-blue bg */
   color: var(--neo-cyan);
