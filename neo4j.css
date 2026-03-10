@@ -164,7 +164,13 @@ header, footer {
 
 /* ── Lead (title) slide ─────────────────────────────────────────────────── */
 section.lead {
-  background: var(--neo-darkest);
+  background-color: var(--neo-darkest);
+  background-image:
+    url(assets/nodes-v.svg),
+    url(assets/nodes-h.svg);
+  background-repeat: no-repeat, no-repeat;
+  background-position: right 48px bottom 48px, right 160px bottom 24px;
+  background-size: 120px auto, 160px auto;
   color: white;
   display: flex;
   flex-direction: column;
