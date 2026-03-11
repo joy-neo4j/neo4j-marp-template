@@ -77,7 +77,7 @@ function buildFile(inputFile) {
       const outFile = join(tmpDir, `d${idx}.svg`)
       idx++
       writeFileSync(inFile, diagram.trimEnd())
-      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent'], { stdio: 'pipe' })
+      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent', '--no-sandbox'], { stdio: 'pipe' })
       const svg = readFileSync(outFile, 'utf8')
         .replace(/<\?xml[^?]*\?>\s*/g, '')
         .replace(/(<svg[^>]*) width="[^"]*"/, '$1')
