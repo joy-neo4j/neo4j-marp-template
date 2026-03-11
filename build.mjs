@@ -78,7 +78,7 @@ function buildFile(inputFile) {
       const outFile = join(tmpDir, `d${idx}.svg`)
       idx++
       writeFileSync(inFile, diagram.trimEnd())
-      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent', '--puppeteerConfig', puppeteerConfig], { stdio: 'pipe' })
+      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent', '--puppeteerArgs', '--no-sandbox --disable-setuid-sandbox'], { stdio: 'pipe' })
       const svg = readFileSync(outFile, 'utf8')
         .replace(/<\?xml[^?]*\?>\s*/g, '')
         .replace(/(<svg[^>]*) width="[^"]*"/, '$1')
