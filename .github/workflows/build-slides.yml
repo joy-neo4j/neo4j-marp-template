@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
@@ -85,10 +85,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -128,7 +128,7 @@ jobs:
           echo "file=$OUT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Upload deck artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.output.outputs.stem }}-${{ steps.date_tag.outputs.date_tag }}-${{ needs.detect.outputs.format }}
           path: ${{ steps.output.outputs.file }}
