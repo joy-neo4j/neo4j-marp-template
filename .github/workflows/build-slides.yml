@@ -1,0 +1,140 @@
+name: Build Slides
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      format:
+        description: Output format to build
+        required: true
+        type: choice
+        options:
+          - pdf
+          - pptx
+        default: pdf
+      deck_paths:
+        description: "Optional comma-separated deck paths for manual runs (for example: decks/a.md,decks/b.md)"
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  DEFAULT_FORMAT: pdf
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      format: ${{ steps.detect.outputs.format }}
+      files: ${{ steps.detect.outputs.files }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed deck files
+        id: detect
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            FORMAT="${{ inputs.format }}"
+          elif [[ -n "${{ vars.SLIDE_FORMAT }}" ]]; then
+            FORMAT="${{ vars.SLIDE_FORMAT }}"
+          else
+            FORMAT="${DEFAULT_FORMAT}"
+          fi
+
+          if [[ "$FORMAT" != "pdf" && "$FORMAT" != "pptx" ]]; then
+            echo "Invalid format '$FORMAT'. Use 'pdf' or 'pptx'."
+            exit 1
+          fi
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ inputs.deck_paths }}" ]]; then
+            FILE_LIST="$(echo "${{ inputs.deck_paths }}" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed '/^$/d')"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            FILE_LIST="$(git diff --name-only --diff-filter=AMCR "${{ github.event.before }}" "${{ github.sha }}" | grep -E '^(decks|examples)/.*\.md$' | grep -vE '\.preview\.md$' || true)"
+          else
+            FILE_LIST=""
+          fi
+
+          FILES_JSON="$(printf "%s\n" "$FILE_LIST" | sed '/^$/d' | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          COUNT="$(echo "$FILES_JSON" | jq 'length')"
+
+          if [[ "$COUNT" -gt 0 ]]; then
+            HAS_CHANGES=true
+          else
+            HAS_CHANGES=false
+          fi
+
+          echo "Resolved format: $FORMAT"
+          echo "Changed decks count: $COUNT"
+          echo "format=$FORMAT" >> "$GITHUB_OUTPUT"
+          echo "files=$FILES_JSON" >> "$GITHUB_OUTPUT"
+          echo "has_changes=$HAS_CHANGES" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        file: ${{ fromJson(needs.detect.outputs.files) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Resolve date tag
+        id: date_tag
+        shell: bash
+        run: |
+          DATE_TAG="$(date +%d%b%y | tr '[:lower:]' '[:upper:]')"
+          echo "date_tag=$DATE_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build selected format for changed deck
+        shell: bash
+        run: npm run ${{ needs.detect.outputs.format }} -- "${{ matrix.file }}"
+
+      - name: Resolve output metadata
+        id: output
+        shell: bash
+        run: |
+          FILE="${{ matrix.file }}"
+          STEM="$(basename "$FILE" .md)"
+          if [[ "${{ needs.detect.outputs.format }}" == "pdf" ]]; then
+            OUT_FILE="${FILE%.md}.pdf"
+          else
+            OUT_FILE="${FILE%.md}.pptx"
+          fi
+          echo "stem=$STEM" >> "$GITHUB_OUTPUT"
+          echo "file=$OUT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Upload deck artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.output.outputs.stem }}-${{ steps.date_tag.outputs.date_tag }}-${{ needs.detect.outputs.format }}
+          path: ${{ steps.output.outputs.file }}
+          if-no-files-found: error
+          retention-days: 14
+
+  no_changes:
+    needs: detect
+    if: needs.detect.outputs.has_changes != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: No deck changes detected
+        run: echo "No changed deck markdown files in this run. Nothing to build."
