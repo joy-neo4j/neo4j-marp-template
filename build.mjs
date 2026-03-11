@@ -70,8 +70,6 @@ function buildFile(inputFile) {
 
   // Mermaid → SVG
   const tmpDir = mkdtempSync(join(tmpdir(), 'marp-mermaid-'))
-  const puppeteerConfigFile = join(tmpDir, 'puppeteer-config.json')
-  writeFileSync(puppeteerConfigFile, JSON.stringify({ args: ['--no-sandbox'] }))
   try {
     let idx = 0
     content = content.replace(/```mermaid\n([\s\S]*?)```/g, (_, diagram) => {
@@ -79,7 +77,7 @@ function buildFile(inputFile) {
       const outFile = join(tmpDir, `d${idx}.svg`)
       idx++
       writeFileSync(inFile, diagram.trimEnd())
-      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent', '--configFile', puppeteerConfigFile], { stdio: 'pipe' })
+      execFileSync(mmdc, ['-i', inFile, '-o', outFile, '--backgroundColor', 'transparent'], { stdio: 'pipe', env: { ...process.env, PUPPETEER_ARGS: '--no-sandbox' } })
       const svg = readFileSync(outFile, 'utf8')
         .replace(/<\?xml[^?]*\?>\s*/g, '')
         .replace(/(<svg[^>]*) width="[^"]*"/, '$1')
