@@ -247,6 +247,7 @@ section.invert blockquote {
 
 section.invert blockquote strong { color: var(--neo-marigold); }
 section.invert blockquote p { color: inherit; }
+section.invert em { color: inherit; }
 
 section.invert th {
   background: rgba(143,227,232,0.2);  /* cyan tint — distinct from dark-blue bg */
