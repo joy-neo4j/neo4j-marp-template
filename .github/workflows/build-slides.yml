@@ -11,7 +11,7 @@ on:
         options:
           - pdf
           - pptx
-        default: pptx
+        default: pdf
       deck_paths:
         description: "Optional comma-separated deck paths for manual runs (for example: decks/a.md,decks/b.md)"
         required: false
@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 env:
-  DEFAULT_FORMAT: pptx
+  DEFAULT_FORMAT: pdf
 
 jobs:
   detect:
@@ -55,7 +55,7 @@ jobs:
             if [[ -n "${{ inputs.deck_paths }}" ]]; then
               FILE_LIST="$(echo "${{ inputs.deck_paths }}" | tr ',' '\n' | sed 's/^ *//;s/ *$//' | sed '/^$/d')"
             else
-              FILE_LIST="$(find decks examples -maxdepth 1 -name '*.md' ! -name '*.preview.md' 2>/dev/null | sort || true)"
+              FILE_LIST="$(find decks -maxdepth 1 -name '*.md' ! -name '*.preview.md' 2>/dev/null | sort || true)"
             fi
           elif [[ "${{ github.event_name }}" == "push" ]]; then
             FILE_LIST="$(git diff --name-only --diff-filter=AMCR "${{ github.event.before }}" "${{ github.sha }}" | grep -E '^(decks|examples)/.*\.md$' | grep -vE '\.preview\.md$' || true)"
