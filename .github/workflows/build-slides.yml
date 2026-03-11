@@ -4,6 +4,10 @@ on:
   push:
   workflow_dispatch:
     inputs:
+      ref:
+        description: "Branch or tag to build from (leave blank to use the branch selected above)"
+        required: false
+        default: ''
       format:
         description: Output format to build
         required: true
@@ -34,6 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.ref || github.ref }}
           fetch-depth: 2
 
       - name: Detect changed deck files
@@ -90,6 +95,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
