@@ -75,6 +75,35 @@ Use ` ```mermaid ` — rendered to SVG at build time. Supports all diagram types
 
 Put images in [`assets/`](assets/) and reference them as `../assets/filename` from your deck files.
 
+## CI/CD — GitHub Actions
+
+The repository includes a **Build Slides** workflow ([`.github/workflows/build-slides.yml`](.github/workflows/build-slides.yml)) that automatically builds slide decks and uploads them as downloadable artifacts.
+
+### Triggers
+
+| Trigger | When it runs | Behaviour |
+|---|---|---|
+| **`push`** | Every push to any branch | Detects changed `.md` files in `decks/` and `examples/` (added, modified, copied, or renamed) and builds each one to **PDF** (the default format). |
+| **`workflow_dispatch`** | Manual run from the Actions tab | Lets you choose a **format** (`pdf` or `pptx`), an optional **ref** (branch/tag), and optional **deck paths** (comma-separated). If no deck paths are provided, all `.md` files in `decks/` are built. |
+
+### Workflow dispatch inputs
+
+| Input | Required | Default | Description |
+|---|---|---|---|
+| `ref` | No | *(current branch)* | Branch or tag to build from. Leave blank to use the branch selected in the Actions UI. |
+| `format` | Yes | `pdf` | Output format — `pdf` or `pptx`. |
+| `deck_paths` | No | *(all decks)* | Comma-separated list of deck file paths to build (e.g. `decks/a.md,decks/b.md`). If omitted, all `.md` files in `decks/` are built. |
+
+### What the workflow does
+
+1. **Detect** — identifies which deck files to build based on the trigger (changed files on push, or the specified/all decks on manual dispatch).
+2. **Build** — runs `npm run <format>` for each detected deck in a parallel matrix job.
+3. **Upload** — uploads each built file as a workflow artifact named `<deck>-<DDMMMYY>-<format>` (e.g. `slides-11MAR26-pdf`).
+
+### Artifacts
+
+Built files are **not committed back to the repository**. They are uploaded as workflow artifacts and can be downloaded from the workflow run summary page. Artifacts are retained for **14 days** before automatic deletion.
+
 ## Using an LLM to generate a deck
 
 [`SLIDE_PROMPT.md`](SLIDE_PROMPT.md) is a ready-to-use system prompt. Paste it into any LLM (Claude, ChatGPT, Gemini…) as the system prompt, then describe your deck. The output drops straight into this template.
@@ -114,3 +143,4 @@ Claude writes the `.md` file, clones this repo to a temp directory, builds the P
 | `SLIDE_PROMPT.md` | LLM prompt for generating decks |
 | `assets/` | Images and SVGs |
 | `.vscode/settings.json` | VS Code Marp extension config |
+| `.github/workflows/build-slides.yml` | CI workflow — builds decks on push and manual dispatch |
