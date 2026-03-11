@@ -1,4 +1,3 @@
-```markdown
 ---
 marp: true
 theme: neo4j
@@ -6,105 +5,214 @@ paginate: true
 math: katex
 ---
 
-### FEG - CMDB: DECLARED VS OBSERVED STATE
-##### Enriching Dependencies with Network Telemetry
-*AuraDB BC · Serverless Graph Analytics · MCP Server*
+<!-- _class: lead -->
+
+![width:160px](../assets/logo-white.png)
+
+# CMDB + Network Observability
+
+### From **Declared State** → **Observed State** on Neo4j Aura
+
+*Architecture proposal · AuraDB Business Critical + Serverless Graph Analytics · MCP + Aura Agents*
 
 ---
 
-#### Agenda
-1. **Executive Summary** — Bridging declared dependencies with observed network flows.
-2. **Target Architecture** — Two-lane system of record and graph analytics.
-3. **Proposed Phases** — From schema hardening to dependency reconciliation.
-4. **Implementation Notes** — Leveraging serverless analytics and GenAI agents.
-5. **Code Snippets** — Starter Cypher patterns for the flow model.
-6. **References** — External use cases and internal resources.
+## Agenda
+
+1. **Why Observed State** — what changes when we add flows
+2. **Two‑lane Aura architecture** — System of Record + Serverless Analytics
+3. **Target architecture** — ingestion, reconciliation, analytics, AI
+4. **Delivery phases** — A → D roadmap
+5. **Implementation patterns** — flow model, reconciliation, GDS workflow
+6. **References** — case study + ecosystem links
 
 ---
 
-### Executive Summary
+<!-- _class: lead -->
 
-#### Bridging the Gap in Dependency Data
-With a strong “Declared State” CMDB graph in Neo4j built from Jira Assets and ticket correlations, the next step is to **enrich declared dependencies with observed network flows** (e.g., Azure NSG Flow Logs). 
+# Why Observed State
 
-**Key Objectives:**
-* Detect **shadow IT** and validate **stale/false dependencies**.
-* Improve **blast-radius accuracy**.
-* Enable **near-real-time risk posture** updates.
-
-#### A Two-Lane Architecture
-This proposal recommends separating workloads into a **System-of-Record CMDB Graph (AuraDB BC)** for persistent, queryable data, and **Serverless Graph Analytics** for repeated analytical runs that write back to the CMDB.
+### Enrich the CMDB with real network behavior
 
 ---
 
-### Target Architecture
+## Today: Strong Declared State Graph
 
-#### System-of-Record vs. Analytics
-* **AuraDB (Persistent Graph)**: Hosts the Business Critical CMDB graph, managing governance, tickets, and reconciliation IDs.
-* **Graph Analytics**: Uses serverless sessions for algorithms like SPOF detection, PageRank, and community detection, employing a projection and write-back model.
-* **GenAI / Assistants**: Aura complements this architecture with **Aura Agents** and an **MCP server for Neo4j**, enabling natural language interaction.
+With a strong “Declared State” CMDB graph in Neo4j:
 
----
+* CMDB entities and relationships modeled in a governed graph
+* Declared dependencies enable fast blast‑radius exploration
+* The graph provides a stable foundation to add more signals
 
-### Proposed Phases: A & B
-
-#### Phase A — Stabilise the CMDB (Declared State)
-* Confirm canonical **entity IDs** and establish a reconciliation approach using cloud resource IDs, GitHub repo IDs, etc.
-* Enforce schema hardening by creating **uniqueness constraints** and operational indexes on stable identifiers.
-* Establish boundaries and ownership for the 11 current domain models.
-
-#### Phase B — Add Observed State (Flow layer)
-* Ingest **NSG Flow Logs** to create a flow model connecting IPs: `(:IP)-[:FLOW]->(:IP)`.
-* Fold these flows into higher-level identities such as Workload, Service, App, and Subnet.
-* Build **confidence scoring** for observed edges based on frequency, volume, and recency.
+> The next step is not replacing declared dependencies — it’s **validating and enriching** them.
 
 ---
 
-### Proposed Phases: C & D
+## What Observed State Adds
 
-#### Phase C — Reconcile Dependencies
-Produce "diff views" to compare declared versus observed states:
-* **Declared-only edges** (highlighting possibly stale data).
-* **Observed-only edges** (highlighting shadow IT).
-* **Confirmed edges** (found in both).
-* Feed these insights back to improve blast-radius traversal and incident ticket enrichment.
+By enriching declared dependencies with observed network flows (e.g., Azure NSG Flow Logs), next steps can be:
 
-#### Phase D — Analytics & Operationalization
-* Run GDS algorithms for **SPOF patterns, criticality ranking, and dependency hotspots**.
-* Detect "interaction neighborhoods" using community detection.
-* Write results back to the CMDB for dashboards and expose them optionally via MCP or Agent tools.
+* Detect **shadow IT**
+* Validate **stale / false dependencies**
+* Improve **blast‑radius accuracy**
+* Move toward **near‑real‑time risk posture** updates
 
 ---
 
-### Implementation Notes Aligned to Aura
+<!-- _class: lead -->
 
-#### Serverless Graph Analytics
-Neo4j positions **Aura Graph Analytics** as a serverless option running on an on-demand consumption model. 
-Use this for elastic analytics without a full-time DS instance, allowing concurrency for multiple analysts and repeated projection/write-back.
+# Two‑lane Aura architecture
 
-#### MCP and Aura Agents
-Aura’s GenAI roadmap highlights the **MCP Server for Neo4j** and **Aura Agents** for CMDB query and automation. 
-**Key Use Cases:**
-* "Ask the CMDB" converting natural language to Cypher with guardrails.
-* "Explain blast radius" to produce evidence paths.
-* Compile change impact briefings detailing impacted services and recent incidents.
+### Persistent CMDB + Elastic analytics
 
 ---
 
-### Starter Code Snippets
+## Lane 1: System‑of‑Record CMDB Graph
 
-#### 1. Flow Layer Model (Observed Edges)
-Merge IPs and aggregate flow metrics over time windows.
+**AuraDB Business Critical** as the persistent, governed graph:
+
+* CMDB objects + tickets + reconciliation IDs
+* Constraints / indexes to harden the schema
+* Provenance for multi‑source reconciliation and auditability
+
+---
+
+## Lane 2: Serverless Graph Analytics
+
+**Aura Graph Analytics (serverless sessions)** for repeated analytics and write‑back:
+
+* **Projection ↔ Write Back** workflow
+* On‑demand analytics without a dedicated DS instance running full‑time
+* Parallelism for multiple analysts and domains
+
+---
+
+<!-- _class: lead -->
+
+# Target architecture
+
+### Multi‑source ingestion + reconciliation + analytics loop
+
+---
+
+## Architecture: Ingestion & Reconciliation
+
+```mermaid
+flowchart LR
+  S["Sources (Jira Assets, Azure, GitHub, Sonatype, etc.)"] --> ETL["Databricks / Spark Batch sync"]
+  FLOW["Observed flows (NSG Flow Logs)"] --> EH["Event Hub / Kafka (optional streaming)"]
+  EH --> ER["Reconciliation match/merge entities"]
+  ETL --> ER --> DB[(AuraDB Business Critical)]
+```
+
+---
+
+## Architecture: Analytics & AI Loop
+
+```mermaid
+flowchart LR
+  DB[(AuraDB Business Critical)] <--> GA["Aura Graph Analytics (Serverless session)"]
+  GA --> GDS["GDS algorithms SPOF, PageRank, communities, path risk"]
+  GDS --> DB
+
+  BOT["AI assistants (ChatOps / Copilot)"] --> MCP["MCP Server for Neo4j (remote MCP hosting)"]
+  BOT --> AG["Aura Agents (cypher / vector / text2cypher)"]
+  MCP --> DB
+  AG --> DB
+```
+
+---
+
+<!-- _class: lead -->
+
+# Delivery phases
+
+### A → D roadmap to “Observed” state
+
+---
+
+## Phase A — Stabilise Declared State
+
+* Confirm canonical **entity IDs** and reconciliation approach
+  *(Jira Asset objectId + cloud resource IDs + GitHub repo IDs + Sonatype component IDs)*
+* Schema hardening: **uniqueness constraints** + operational indexes
+* Establish domain boundaries (**11 domains today**) + ownership
+
+---
+
+## Phase B — Add Observed State Flow Layer
+
+* Ingest **NSG Flow Logs** into a flow model
+  `(:IP)-[:FLOW {bytes, packets, start, end, direction, action}]->(:IP)`
+* Fold IP flows up to higher‑level identities:
+  `Workload/Host`, `Service`, `App`, `Subnet/VLAN`, `NSG`, …
+* Build **confidence scoring** over time (frequency / volume / recency)
+
+---
+
+## Phase C — Reconcile Declared vs Observed
+
+<div style="display:flex; gap:2rem;">
+<div>
+
+### Diff views
+
+* **Declared‑only** edges
+  *(possibly stale)*
+* **Observed‑only** edges
+  *(shadow IT)*
+* **Confirmed** edges
+  *(both)*
+
+</div>
+<div>
+
+### Feed back into
+
+* Blast‑radius traversal accuracy
+* Ticket enrichment
+  *(incident/change correlation)*
+
+</div>
+</div>
+
+---
+
+## Phase D — Analytics & Operationalisation
+
+* Run GDS for:
+
+  * SPOF patterns, criticality ranking, dependency hotspots
+  * Community detection for “interaction neighborhoods”
+* **Write back** results for dashboards + alerting workflows
+* Optionally expose findings via **MCP / Aura Agents**
+
+---
+
+<!-- _class: lead -->
+
+# Implementation patterns
+
+### Starter building blocks
+
+---
+
+## Cypher: Flow Layer Model (Observed Edges)
+
 ```cypher
 MERGE (src:IP {value:$srcIp})
 MERGE (dst:IP {value:$dstIp})
-MERGE (src)-[f:FLOW {windowStart:$windowStart, windowEnd:$windowEnd}]->(dst)
-SET f.bytes = coalesce(f.bytes,0) + $bytes, f.action = $action;
+MERGE (src)-[f:FLOW {windowStart:$ws, windowEnd:$we}]->(dst)
+SET f.bytes=coalesce(f.bytes,0)+$bytes, f.packets=coalesce(f.packets,0)+$packets,
+    f.action=$action, f.direction=$direction, f.lastSeen=$lastSeen;
 ```
 
-#### 2. Reconcile Observed to Workload Identity
-Link IPs back to host/service workloads via NIC mappings.
+---
+
+## Cypher: Reconcile Observed → Workload Identity
+
 ```cypher
+// Link IPs to workloads via NIC/resource mapping
 MATCH (ip:IP {value:$ip})
 MATCH (nic:NIC {resourceId:$nicId})-[:ATTACHED_TO]->(wl:Workload)
 MERGE (wl)-[:HAS_IP]->(ip);
@@ -112,13 +220,49 @@ MERGE (wl)-[:HAS_IP]->(ip);
 
 ---
 
-### GDS Workflow & References
+## GDS: Projection → Compute → Write Back
 
-#### Projection and Write-Back Pattern
-Project the graph using elements like `Workload`, `Service`, and `FLOW` using the `gds.graph.project` procedure to prepare for analytical computation.
-
-#### References
-* CBA network observability knowledge graph use case.
-* Neo4j's GenAI / GraphRAG ecosystem roadmap and best practices deck covering Aura Agents and the MCP server.
-* Internal Slack discussions and channels for the proposed workflows.
+```cypher
+CALL gds.graph.project(
+  'cmdb_observed',
+  ['Workload','Service','IP','NSG'],
+  {FLOW:{type:'FLOW'}, DEPENDS_ON:{type:'DEPENDS_ON'}}
+);
 ```
+
+---
+
+## MCP + Aura Agents: CMDB Query & Automation
+
+Use cases enabled by **MCP Server for Neo4j** and **Aura Agents**:
+
+* “Ask the CMDB” in natural language → Cypher (with guardrails)
+* “Explain blast radius” with evidence paths
+* “Change impact briefing” including owners + recent incidents
+
+*Note:* Security/enterprise considerations apply (e.g., constraints with IP filtering / PrivateLink for some agent-side services).
+
+---
+
+<!-- _class: lead -->
+
+# References
+
+### Case study + ecosystem context
+
+---
+
+## References
+
+* CBA network observability knowledge graph
+  [https://neo4j.com/blog/financial-services/network-observability-knowledge-graphs-commonwealth-bank-australia/](https://neo4j.com/blog/financial-services/network-observability-knowledge-graphs-commonwealth-bank-australia/)
+* “This week in Neo4j…” (GenAI / GraphRAG ecosystem context)
+  [https://neo4j.com/blog/twin4j/this-week-in-neo4j-langchain-knowledgegraph-cypher-gds-and-more/](https://neo4j.com/blog/twin4j/this-week-in-neo4j-langchain-knowledgegraph-cypher-gds-and-more/)
+
+---
+
+<!-- _class: lead -->
+
+# Thank You
+
+### Next: align on flow ingestion scope + reconciliation rules + first “declared vs observed” diff report
