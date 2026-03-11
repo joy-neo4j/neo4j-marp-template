@@ -11,7 +11,7 @@ on:
         options:
           - pdf
           - pptx
-        default: pdf
+        default: pptx
       deck_paths:
         description: "Optional comma-separated deck paths for manual runs (for example: decks/a.md,decks/b.md)"
         required: false
@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 env:
-  DEFAULT_FORMAT: pdf
+  DEFAULT_FORMAT: pptx
 
 jobs:
   detect:
@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
 
@@ -42,8 +42,6 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             FORMAT="${{ inputs.format }}"
-          elif [[ -n "${{ vars.SLIDE_FORMAT }}" ]]; then
-            FORMAT="${{ vars.SLIDE_FORMAT }}"
           else
             FORMAT="${DEFAULT_FORMAT}"
           fi
@@ -87,10 +85,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: npm
@@ -104,6 +102,12 @@ jobs:
         run: |
           DATE_TAG="$(date +%d%b%y | tr '[:lower:]' '[:upper:]')"
           echo "date_tag=$DATE_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Log selected deck build
+        shell: bash
+        run: |
+          echo "Building deck: ${{ matrix.file }}"
+          echo "Selected format: ${{ needs.detect.outputs.format }}"
 
       - name: Build selected format for changed deck
         shell: bash
@@ -124,7 +128,7 @@ jobs:
           echo "file=$OUT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Upload deck artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.output.outputs.stem }}-${{ steps.date_tag.outputs.date_tag }}-${{ needs.detect.outputs.format }}
           path: ${{ steps.output.outputs.file }}
